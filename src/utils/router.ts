@@ -1,4 +1,3 @@
-import bridge from '@vkontakte/vk-bridge';
 import { IPanel, IStructure, IView } from '../types/app';
 import getHashUrl from './getHashUrl';
 
@@ -80,7 +79,6 @@ class Router implements IRouter {
     window.history.pushState({ route: id }, id);
 
     if (this.hash !== hash) {
-      bridge.send("VKWebAppSetLocation", { location: hash });
       this.hash = hash;
     }
   }
@@ -96,7 +94,6 @@ class Router implements IRouter {
     window.history.pushState({ route: panel }, panel);
 
     if (this.hash !== hash) {
-      bridge.send("VKWebAppSetLocation", { location: hash });
       this.hash = hash;
     }
   }
@@ -122,7 +119,6 @@ class Router implements IRouter {
     const hash = getHashUrl(this.views[this.activeView].hash, this.views[this.activeView].panel.hash);
 
     if (this.hash !== hash) {
-      bridge.send("VKWebAppSetLocation", { location: hash });
       this.hash = hash;
     }
   }
