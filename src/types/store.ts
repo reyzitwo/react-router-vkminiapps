@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import { IRouter } from "../utils/router";
 import { IPanel, IView } from "./app";
 
@@ -7,7 +6,8 @@ export interface IAppState{
   modal: any,
   activeView: string,
   activePanel: string,
-  hash: string
+  hash: string,
+  isBack: boolean,
 }
 
 export enum EActionTypes{
@@ -18,7 +18,8 @@ export enum EActionTypes{
   ROUTER_TO_BACK = 'ROUTER/TO_BACK',
   ROUTER_TO_HASH = 'ROUTER/TO_HASH',
   ROUTER_INIT = 'ROUTER/INIT',
-  ROUTER_RESET_HISTORY = "ROUTER/RESET_HISTORY"
+  ROUTER_RESET_HISTORY = "ROUTER/RESET_HISTORY",
+  ROUTER_SWITCH_BACK = "ROUTER/SWITCH_BACK",
 }
 
 export interface ItoPopout{
@@ -57,8 +58,11 @@ export interface IrouterInit{
 export interface IresetHistory{
   type: EActionTypes.ROUTER_RESET_HISTORY
 }
+export interface IswitchBack{
+  type: EActionTypes.ROUTER_SWITCH_BACK
+}
 
-export type TActions = ItoPopout | ItoModal | ItoView | ItoPanel | ItoBack | ItoHash | IrouterInit | IresetHistory;
+export type TActions = ItoPopout | ItoModal | ItoView | ItoPanel | ItoBack | ItoHash | IrouterInit | IresetHistory | IswitchBack;
 
 
 

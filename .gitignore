@@ -2,6 +2,7 @@
 .eslintcache
 
 # dependencies
+yarn.lock
 /node_modules
 /.pnp
 .pnp.js
@@ -13,6 +14,7 @@
 /build
 
 # for npm
+.idea
 /lib
 /dist
 

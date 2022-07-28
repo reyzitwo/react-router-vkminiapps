@@ -6,7 +6,8 @@ const initialState: IAppState = {
   modal: null,
   activeView: "",
   activePanel: "",
-  hash: ""
+  hash: "",
+  isBack: true,
 };
 
 let router = {} as IRouter;
@@ -43,6 +44,9 @@ export default function app(state: IAppState = initialState, action: TActions) {
       return { ...state, activeView: router.getActiveView(), activePanel: router.getActivePanel() };
     case EActionTypes.ROUTER_RESET_HISTORY:
       router.resetHistory();
+      return state;
+    case EActionTypes.ROUTER_SWITCH_BACK:
+      router.switchBack();
       return state;
     default:
       return state;
