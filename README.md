@@ -1,7 +1,7 @@
 # react-router-vkminiapps
 Routing library for VK Mini Apps with VKUI
 
-Позволяет быстро и просто организовать маршрутизацию с поддержкой хеш-навигации и [iOS Swipe Back](https://github.com/reyzitwo/react-router-vkminiapps/README.md#ios-swipe-back). Внутри используется redux через context, что гарантирует адекватное обновления состояния и изолированность от других store. Также с помощью History API браузера обрабатывается переход по системной кнопке назад.
+Позволяет быстро и просто организовать маршрутизацию с поддержкой хеш-навигации и [iOS Swipe Back](https://github.com/reyzitwo/react-router-vkminiapps#ios-swipe-back). Внутри используется redux через context, что гарантирует адекватное обновления состояния и изолированность от других store. Также с помощью History API браузера обрабатывается переход по системной кнопке назад.
 
 ## Установка
 
