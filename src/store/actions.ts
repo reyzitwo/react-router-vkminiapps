@@ -4,6 +4,7 @@ import {
   ItoHash,
   ItoModal,
   ItoPanel,
+  ItoReplacePanel,
   ItoPopout,
   ItoView,
   TActions,
@@ -24,6 +25,12 @@ export const toView = function (payload: ItoView["payload"]): TActions {
 export const toPanel = function (payload: ItoPanel["payload"]): TActions {
   return {
     type: EActionTypes.ROUTER_TO_PANEL,
+    payload,
+  };
+};
+export const toReplacePanel = function (payload: ItoReplacePanel["payload"]): TActions {
+  return {
+    type: EActionTypes.ROUTER_TO_REPLACE_PANEL,
     payload,
   };
 };

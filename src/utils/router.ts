@@ -1,3 +1,4 @@
+import bridge from '@vkontakte/vk-bridge';
 import { IPanel, IStructure, IView } from "../types/app";
 import getHashUrl from "./getHashUrl";
 
@@ -10,12 +11,15 @@ export interface IRouter {
   isBack: boolean;
   historyPanels: any;
   historyViews: any[];
+  arrPanelsView: Array<IPanel["id"]>;
   getActiveView(): IView["id"];
   getActivePanel(): IPanel["id"];
+  getArrPanelsView(): IPanel["id"];
   getHash(): string;
   setModal(): void;
   setActiveView(id: IView["id"]): void;
   setActivePanel(id: IPanel["id"]): void;
+  toReplacePanel(id: IPanel["id"]): void;
   back(): void;
   toHash(hash: string): void;
   resetHistory(): void;
@@ -27,6 +31,7 @@ class Router implements IRouter {
   hash: IRouter["hash"];
   activeView: IRouter["activeView"];
   activePanel: IRouter["activePanel"];
+  arrPanelsView: IRouter["arrPanelsView"]
   views: IRouter["views"];
   isBack: IRouter["isBack"];
   historyPanels: IRouter["historyPanels"];
@@ -37,7 +42,10 @@ class Router implements IRouter {
     this.hash = "";
     this.activeView = structure[0].id;
     this.activePanel = structure[0].panels[0].id;
+    this.arrPanelsView = [structure[0].panels[0].id];
     this.isBack = true;
+
+    bridge.send('VKWebAppSetSwipeSettings', { history: true });
 
     // объект views для быстрого доступа по id с одной активной панелью
     this.views = structure.reduce((accum: any, item) => {
@@ -60,10 +68,19 @@ class Router implements IRouter {
   getActivePanel() {
     return this.activePanel;
   }
+  getArrPanelsView() {
+    return this.historyPanels[this.activeView]
+  }
+  getHistoryView() {
+    this.arrPanelsView = this.historyPanels[this.activeView];
+    return this.arrPanelsView
+  }
   getHash() {
     return this.hash;
   }
   setModal() {
+    bridge.send('VKWebAppSetSwipeSettings', { history: false });
+
     const history = this.historyPanels[this.activeView];
     if (
       history.length > 0 &&
@@ -112,12 +129,37 @@ class Router implements IRouter {
       this.hash = hash;
     }
   }
+  toReplacePanel(panel: IPanel["id"]) {
+    const i = this.views[this.activeView].panels.findIndex(
+        (item: any) => item.id === panel
+    );
+    this.views[this.activeView] = {
+      ...this.views[this.activeView],
+      panel: this.views[this.activeView].panels[i],
+    };
+
+    this.activePanel = panel;
+    this.historyPanels[this.activeView] = this.views[this.activeView].panel
+
+    const hash = getHashUrl(
+        this.views[this.activeView].hash,
+        this.views[this.activeView].panel.hash
+    );
+
+    window.history.replaceState({ route: panel }, panel);
+
+    if (this.hash !== hash) {
+      this.hash = hash;
+    }
+  }
   back() {
     if (this.historyViews.length === 0) {
-      return;
+      return bridge.send('VKWebAppSetSwipeSettings', { history: false });
     }
 
     if (this.historyPanels[this.activeView].length > 1) {
+      bridge.send('VKWebAppSetSwipeSettings', { history: true });
+
       const lastPanel = this.historyPanels[this.activeView].pop();
       if (lastPanel.id === "route_modal") {
         return;

@@ -13,8 +13,26 @@ const initialState: IAppState = {
 let router = {} as IRouter;
 
 export default function app(state: IAppState = initialState, action: TActions) {
+  function routerBack() {
+    router.back();
+    return {
+      ...state,
+      activeView: router.getActiveView(),
+      activePanel: router.getActivePanel(),
+      arrPanelsView: router.getArrPanelsView(),
+      hash: router.getHash(),
+      modal: null,
+      popout: null
+    };
+  }
+
   switch (action.type) {
     case EActionTypes.ROUTER_TO_POPOUT:
+      console.log(router)
+      if (!action.payload) {
+        return routerBack();
+      }
+
       router.setModal();
       return { ...state, popout: action.payload };
     case EActionTypes.ROUTER_TO_MODAL:
@@ -22,26 +40,21 @@ export default function app(state: IAppState = initialState, action: TActions) {
       return { ...state, modal: action.payload };
     case EActionTypes.ROUTER_TO_VIEW:
       router.setActiveView(action.payload);
-      return { ...state, activeView: action.payload, activePanel: router.getActivePanel(), hash: router.getHash() };
+      return { ...state, activeView: action.payload, activePanel: router.getActivePanel(), hash: router.getHash(), arrPanelsView: router.getArrPanelsView()  };
     case EActionTypes.ROUTER_TO_PANEL:
       router.setActivePanel(action.payload);
+      return { ...state, activePanel: action.payload, hash: router.getHash(), arrPanelsView: router.getArrPanelsView() };
+    case EActionTypes.ROUTER_TO_REPLACE_PANEL:
+      router.toReplacePanel(action.payload);
       return { ...state, activePanel: action.payload, hash: router.getHash() };
     case EActionTypes.ROUTER_TO_BACK:
-      router.back();
-      return {
-        ...state,
-        activeView: router.getActiveView(),
-        activePanel: router.getActivePanel(),
-        hash: router.getHash(),
-        modal: null,
-        popout: null
-      };
+      return routerBack()
     case EActionTypes.ROUTER_TO_HASH:
       router.toHash(action.payload);
       return { ...state, hash: action.payload, activeView: router.getActiveView(), activePanel: router.getActivePanel() };
     case EActionTypes.ROUTER_INIT:
       router = action.payload;
-      return { ...state, activeView: router.getActiveView(), activePanel: router.getActivePanel() };
+      return { ...state, activeView: router.getActiveView(), activePanel: router.getActivePanel(), arrPanelsView: router.getArrPanelsView() };
     case EActionTypes.ROUTER_RESET_HISTORY:
       router.resetHistory();
       return state;
