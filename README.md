@@ -1,16 +1,18 @@
 # react-router-vkminiapps
 Routing library for VK Mini Apps with VKUI
 
-Позволяет быстро и просто организовать маршрутизацию с поддержкой хеш-навигации. Внутри используется redux через context, что гарантирует адекватное обновления состояния и изолированность от других store. Также с помощью History API браузера обрабатывается переход по системной кнопке назад.
-
-Библиотека написана под собственные нужды, используется в нескольких рабочих проектах и никак не связана с разработчиками ВК. 
+Позволяет быстро и просто организовать маршрутизацию с поддержкой хеш-навигации и [iOS Swipe Back](https://github.com/reyzitwo/react-router-vkminiapps/README.md#ios-swipe-back). Внутри используется redux через context, что гарантирует адекватное обновления состояния и изолированность от других store. Также с помощью History API браузера обрабатывается переход по системной кнопке назад.
 
 ## Установка
 
 The package can be installed via [npm](https://github.com/npm/cli):
 
 ```
-npm install react-router-vkminiapps --save
+npm install @reyzitwo/react-router-vkminiapps --save
+```
+or [yarn](https://yarnpkg.com/)
+```
+yarn add @reyzitwo/react-router-vkminiapps
 ```
 
 ## Использование
@@ -57,7 +59,7 @@ export default structure;
 Подключаем компонент Router из библиотеки, ну или можно иначе назвать, это не важно, импорт по дефолту. Оборачиваем наше приложение в него. Передаем в качестве props structure наш массив вивок.
 
 ```js
-import Router from 'react-router-vkminiapps';
+import Router from '@reyzitwo/react-router-vkminiapps';
 import structure from './structure';
 import App from './App';
 
@@ -72,7 +74,7 @@ ReactDOM.render(app, document.getElementById("root"));
 Используем hoc для доступа к управлению и чтению маршрутов. После применения компонент получает пропс router со всеми необходимыми значениями и методами (об этом ниже).
 
 ```js
-import { withRouter } from 'react-router-vkminiapps';
+import { withRouter } from '@reyzitwo/react-router-vkminiapps';
 
 const MyComponent = (props)=>{
  const setActiveView = (e)=> props.router.toView(e.currentTarget.dataset.id); 
@@ -131,14 +133,19 @@ export defalut withRouter(MyComponent);
 | activeView  | ID активной вивки.                                                                                                                                                                |
 | activePanel | ID активной панели.                                                                                                                                                               |
 | hash        | Текущее значение хеш.                                                                                                                                                             |
-| ----        | ----                                                                                                                                                                              |
+| arrPanelsView        | Массив с историей открытых панелей View. Массив содержит элементы формата `{ id: string, hash: string }`                                                                                                                                                                              |
 | toModal     | Метод для открытия модалки. В качестве аргумента передаем ID модалки.                                                                                                             |
-| toPopout    | Метод для открытия алерта. В качестве аргумента передаем компонент с алертом.                                                                                                     |
+| toPopout    | Метод для открытия алерта. В качестве аргумента передаем компонент с алертом. Если передать `undefined` (т.е. пустой аргумент), то будет вызван **toBack**                                                                                                 |
 | toView      | Метод для перехода на нужную View. В качестве аргумента передаем ID вивки (должна быть в structure).                                                                              |
 | toPanel     | Метод для перехода на нужную Panel. В качестве аргумента передаем ID панели (должна быть в structure).                                                                            |
 | toHash      | Метод для перехода по маршруту на основании известного хеша. В качестве аргумента строка с хешем. Алгоритм соспоставит structure hash и при совпадении активирует нужный маршрут. |
 | toBack      | Метод возврата на предыдущий маршрут. Алгоритм благодаря хранения истории и structure сам знает куда направить пользователя. Передача аргументов не требуется.                    |
 | switchBack  | Метод возврата отключения навигацией системной кнопкной назад. Может понадобится в кейсах типо безвозвратных заглушек и тд                                                         |
+
+### iOS Swipe Back
+Роутер поддерживает [iOS Swipe Back](https://vkcom.github.io/VKUI/#/View?id=iosswipeback), на первой панели отправляется событие [VKWebAppSetSwipeSettings](https://dev.vk.com/bridge/VKWebAppSetSwipeSettings) c `history: true`, а `history: false` на других.
+
+В `onSwipeBack` компонента View нужно передать `router.toBack()`, а в проп `history` id панелей в порядке открытия, которые можно получить в `router.arrPanelsView`
 
 ### Modals and Popouts
 В интерфейсах VKUI модалки и алерты являются разными сущностями с различным реализацией. Данная библиотека предлагает все лишь место под хранение во внутреннем сторе, а также добавляет обработку закрытие окна по системной кнопке назад обнуляя свойства modal и popout. Если необходимости в этом нет, можно не использовать.
