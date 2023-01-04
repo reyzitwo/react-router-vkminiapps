@@ -1,6 +1,6 @@
 {
   "name": "@reyzitwo/react-router-vkminiapps",
-  "version": "1.4.0",
+  "version": "1.4.8",
   "description": "Routing library for VK Mini Apps",
   "main": "dist/index.js",
   "repository": {

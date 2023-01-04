@@ -8,6 +8,7 @@ import {
   ItoPopout,
   ItoView,
   TActions,
+  IresetHistory,
 } from "../types/store";
 
 export const toPopout = function (payload: ItoPopout["payload"]): TActions {
@@ -57,9 +58,10 @@ export const routerInit = function (payload: IrouterInit["payload"]): TActions {
     payload,
   };
 };
-export const resetHistory = function (): TActions {
+export const resetHistory = function (payload: IresetHistory["payload"]): TActions {
   return {
     type: EActionTypes.ROUTER_RESET_HISTORY,
+    payload,
   };
 };
 export const switchBack = function (): TActions {

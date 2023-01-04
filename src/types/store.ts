@@ -1,5 +1,5 @@
 import { IRouter } from "../utils/router";
-import { IPanel, IView } from "./app";
+import { IPanel, IView, IStructure } from "./app";
 
 export interface IAppState{
   popout: any
@@ -63,6 +63,7 @@ export interface IrouterInit{
 }
 export interface IresetHistory{
   type: EActionTypes.ROUTER_RESET_HISTORY
+  payload: IStructure
 }
 export interface IswitchBack{
   type: EActionTypes.ROUTER_SWITCH_BACK

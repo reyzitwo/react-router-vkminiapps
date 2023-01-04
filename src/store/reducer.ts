@@ -28,7 +28,6 @@ export default function app(state: IAppState = initialState, action: TActions) {
 
   switch (action.type) {
     case EActionTypes.ROUTER_TO_POPOUT:
-      console.log(router)
       if (!action.payload) {
         return routerBack();
       }
@@ -56,7 +55,7 @@ export default function app(state: IAppState = initialState, action: TActions) {
       router = action.payload;
       return { ...state, activeView: router.getActiveView(), activePanel: router.getActivePanel(), arrPanelsView: router.getArrPanelsView() };
     case EActionTypes.ROUTER_RESET_HISTORY:
-      router.resetHistory();
+      router.resetHistory(action.payload);
       return state;
     case EActionTypes.ROUTER_SWITCH_BACK:
       router.switchBack();

@@ -22,7 +22,7 @@ export interface IRouter {
   toReplacePanel(id: IPanel["id"]): void;
   back(): void;
   toHash(hash: string): void;
-  resetHistory(): void;
+  resetHistory(newStructure: IRouter["structure"]): void;
   switchBack(): void;
 }
 
@@ -214,20 +214,28 @@ class Router implements IRouter {
       }
     }
   }
-  resetHistory() {
-    // история панелей
-    let counter = 0;
-    for (let key in this.historyPanels) {
-      counter += this.historyPanels[key].length - 1;
-      this.historyPanels[key] = this.historyPanels[key].slice(0, 1);
-    }
-    this.views[this.activeView].panel =
-      this.historyPanels[this.activeView][
-        this.historyPanels[this.activeView].length - 1
-      ];
-    // история views
+  resetHistory(newStructure: IStructure) {
+    this.hash = "";
+    this.activeView = newStructure[0].id;
+    this.activePanel = newStructure[0].panels[0].id;
+    this.arrPanelsView = [newStructure[0].panels[0].id];
+
+    bridge.send('VKWebAppSetSwipeSettings', { history: true });
+
+    // объект views для быстрого доступа по id с одной активной панелью
+    this.views = newStructure.reduce((accum: any, item) => {
+      accum[item.id] = { ...item, panel: item.panels[0] };
+      return accum;
+    }, {});
+
+    // история панелей, добавляем первую для каждого views
+    this.historyPanels = newStructure.reduce((accum: any, item) => {
+      accum[item.id] = [item.panels[0]];
+      return accum;
+    }, {});
+
+    // история views, добавляем первую
     this.historyViews = [this.views[this.activeView]];
-    window.history.go(-counter);
   }
   switchBack() {
     this.isBack = !this.isBack;

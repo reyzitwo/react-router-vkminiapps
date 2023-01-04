@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactElement, useEffect } from "react";
 import { Provider } from "react-redux";
 import { routerInit, toBack } from "../store/actions";
 import Router from "../utils/router";
@@ -9,7 +9,7 @@ export const RouterContext = React.createContext<any | null>(null);
 
 interface AppProps {
   structure: IStructure;
-  children: ReactNode;
+  children: ReactElement;
 }
 
 const App: React.FC<AppProps> = ({ structure, children }) => {
