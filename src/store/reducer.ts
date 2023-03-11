@@ -13,23 +13,10 @@ const initialState: IAppState = {
 let router = {} as IRouter;
 
 export default function app(state: IAppState = initialState, action: TActions) {
-  function routerBack() {
-    router.back();
-    return {
-      ...state,
-      activeView: router.getActiveView(),
-      activePanel: router.getActivePanel(),
-      arrPanelsView: router.getArrPanelsView(),
-      hash: router.getHash(),
-      modal: null,
-      popout: null
-    };
-  }
-
   switch (action.type) {
     case EActionTypes.ROUTER_TO_POPOUT:
       if (!action.payload) {
-        return routerBack();
+        return { ...state, popout: action.payload };
       }
 
       router.setModal();
@@ -47,7 +34,16 @@ export default function app(state: IAppState = initialState, action: TActions) {
       router.toReplacePanel(action.payload);
       return { ...state, activePanel: action.payload, hash: router.getHash() };
     case EActionTypes.ROUTER_TO_BACK:
-      return routerBack()
+      router.back();
+      return {
+        ...state,
+        activeView: router.getActiveView(),
+        activePanel: router.getActivePanel(),
+        arrPanelsView: router.getArrPanelsView(),
+        hash: router.getHash(),
+        modal: null,
+        popout: null
+      };
     case EActionTypes.ROUTER_TO_HASH:
       router.toHash(action.payload);
       return { ...state, hash: action.payload, activeView: router.getActiveView(), activePanel: router.getActivePanel() };
